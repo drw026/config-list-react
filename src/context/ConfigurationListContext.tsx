@@ -1,8 +1,13 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, ReactNode } from "react";
 
-export const ConfigurationListContext = createContext(null);
+export const ConfigurationListContext = createContext<ConfigurationListContextType | null>(null);
 
-const ConfigurationListProvider: React.FC = ({ children }) => {
+type ConfigurationListProviderProps = {
+    children: ReactNode;
+}
+
+const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
+    const { children } = props;
     const [configList, setConfigList] = useState<IConfig[]>([]);
 
     const getConfigurations=() => {
@@ -23,8 +28,11 @@ const ConfigurationListProvider: React.FC = ({ children }) => {
     },[])
 
     return (
-        {children}
+        <ConfigurationListContext.Provider value={{configList}}>
+            {children}
+        </ConfigurationListContext.Provider>
     )
 }
 
 export default ConfigurationListProvider
+
