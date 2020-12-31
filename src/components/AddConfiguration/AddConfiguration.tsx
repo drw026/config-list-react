@@ -3,14 +3,14 @@ import Input from '../Input/Input';
 
 const AddConfiguration = () => (
     <form className="AppConfiguration">
-        <div className="form-group">
-            <Input name='input1' label='Input1' />
-        </div>
-        <div className="form-group">
-            <Input name='input2' label='Input2'/>
-        </div>
-        <div className="form-group">
-            <Input name='input3' label='Input3' />
+        <div className="input-group">
+            <div className="input-group-prepend">
+                <span className="input-group-text">Configurations uploader</span>
+            </div>
+            <Input name='uploadConfig' type='file' />
+            <div className="input-group-append">
+                <button className="btn btn-primary">Upload</button>
+            </div>
         </div>
     </form>
 );
