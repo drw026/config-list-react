@@ -11,8 +11,8 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
     const [configList, setConfigList] = useState<IConfig[]>([]);
 
     const getConfigurations=() => {
-        fetch('configurations.json'
-            ,{
+        fetch('configurations.json',
+            {
                 headers : {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'

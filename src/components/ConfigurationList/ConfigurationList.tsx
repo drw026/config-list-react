@@ -7,16 +7,18 @@ const ConfigurationList: React.FC = () => {
         <table className="table">
             <thead>
                 <tr>
-                    <th>field1</th>
-                    <th>field2</th>
-                    <th>field3</th>
-                    <th>controls</th>
+                    <th>Title</th>
+                    <th>Test ID</th>
+                    <th>Status</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             { configList.map((config, index) => (
                 <tr key={index}>
-                    {Object.keys(config).map((field, index) => (<td key={index}>{field}</td>))}
+                    {Object.values(config).map((field, index) => (<td key={index}>{field}</td>))}
                     <td><button>Remove</button><button>Edit</button></td>
                 </tr>
             ))}
