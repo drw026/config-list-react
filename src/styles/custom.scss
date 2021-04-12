@@ -11,4 +11,16 @@
 
 .addConfiguration {
   padding: .5rem 0;
+
+  option:disabled {
+    color: lightgray;
+  }
+
+  .file-input {
+   opacity: 0;
+  }
+
+  .file-label--disabled {
+    background-color: #e9ecef;
+  }
 }

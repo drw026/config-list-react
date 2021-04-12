@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Input from '../Input/Input';
+import SegmentSelect from "../SegmentSelect/SegmentSelect";
 
-type AppState = {
+type FormState = {
     title: string
     type: string
-    testSegments: string[],
-    referenceSegments: string[],
+    testSegments: number[],
+    referenceSegments: number[],
     file: File | null,
     activateOnUpload: boolean
 }
@@ -15,7 +16,7 @@ type Segments = {
 }
 
 const AddConfiguration = () => {
-    const [formState, setFormState] = useState<AppState>({
+    const [formState, setFormState] = useState<FormState>({
         title: '',
         type: '',
         testSegments: [],
@@ -27,6 +28,20 @@ const AddConfiguration = () => {
         g1: '', g2: '', g3: '', g4: '', g5: '', g6: '', g7: '', g8: '', g9: '', g10: '',
         g11: '', g12: '', g13: '', g14: '', g15: '', g16: '', g17: '', g18: '', g19: '', g20: ''
     });
+
+    const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log(formState);
+
+        setFormState({
+           title: '',
+           type: '',
+           testSegments: [],
+           referenceSegments: [],
+           file: null,
+           activateOnUpload: false
+        });
+    }
 
     const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormState({
@@ -60,65 +75,64 @@ const AddConfiguration = () => {
         }
     }
 
+    const formatSegments = (segments: Segments, filter: string) => (
+        Object.keys(segments)
+            .filter((segment) => (segments[segment] === filter))
+            .map((segment) => parseInt(segment.replace('g', ''), 10))
+    )
+
     useEffect(() => {
         setFormState({
             ...formState,
-            testSegments: Object.keys(segments).filter((segment) => (segments[segment] === 'test')),
-            referenceSegments: Object.keys(segments).filter((segment) => (segments[segment] === 'reference'))
+            testSegments: formatSegments(segments, 'test'),
+            referenceSegments: formatSegments(segments, 'reference')
         })
     }, [segments]);
 
     return (
-        <form className="addConfiguration">
+        <form className="addConfiguration" onSubmit={submitHandler}>
             <div className="form-row">
                 <div className="col-auto">
                     <Input name='title' type='text' onChange={inputHandler}/>
                 </div>
                 <div className="col-auto">
-                    <select name='type' className="form-control" disabled={formState.title === ''} onChange={selectHandler}>
+                    <select defaultValue={''} name='type' className="form-control" disabled={formState.title === ''} onChange={selectHandler}>
+                        <option value="" disabled>Choose type</option>
                         <option value="direction-markers">Direction Markers</option>
                         <option value="url-filters">URL filters</option>
                     </select>
                 </div>
                 <div className="col-auto">
-                    <select name='type'
-                            className="form-control"
-                            multiple
-                            disabled={formState.type === ''}
-                            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                                selectSegmentHandler((segments[event.target.value] ? '' : 'test'), event.target.value);
-                    }}>
-                        {Object.keys(segments).map((segment, index) => (
-                            <option
-                                key={index}
-                                value={segment}
-                                disabled={segments[segment] === 'reference'}>
-                                {segment}
-                            </option>
-                        ))}
-                    </select>
+                    <SegmentSelect
+                        name="type"
+                        disabled={formState.type === ''}
+                        optionList={segments}
+                        referenceName="reference"
+                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                            selectSegmentHandler((segments[event.target.value] ? '' : 'test'), event.target.value);
+                        }}
+                    />
                 </div>
                 <div className="col-auto">
-                    <select name='type'
-                            className="form-control"
-                            multiple
-                            disabled={formState.type === ''}
-                            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                                selectSegmentHandler((segments[event.target.value] ? '' : 'reference'), event.target.value);
-                    }}>
-                        {Object.keys(segments).map((segment, index) => (
-                            <option
-                                key={index}
-                                value={segment}
-                                disabled={segments[segment] === 'test'}>
-                                {segment}
-                            </option>
-                        ))}
-                    </select>
+                    <SegmentSelect
+                        name="type"
+                        disabled={formState.type === ''}
+                        optionList={segments}
+                        referenceName="test"
+                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                            selectSegmentHandler((segments[event.target.value] ? '' : 'reference'), event.target.value);
+                        }}
+                    />
                 </div>
                 <div className="col-auto">
-                    <label htmlFor="file">
-                        <Input name='uploadConfig' type='file' id="file"
+                    <label className=
+                               {(formState.testSegments.length === 0 || formState.referenceSegments.length === 0)
+                               ? "form-control file-label--disabled"
+                               : "form-control"}>
+                        <input name="uploadConfig"
+                               type="file"
+                               id="file"
+                               className="file-input"
                                onChange={fileInputHandler}
                                disabled={(formState.testSegments.length === 0 || formState.referenceSegments.length === 0)}
                         />
@@ -131,7 +145,7 @@ const AddConfiguration = () => {
                     </div>
                 </div>
                 <div className="col-auto">
-                    <button className="btn btn-primary"
+                    <button className="btn btn-primary" type="submit"
                         disabled={formState.file === null}>Add test</button>
                 </div>
             </div>
