@@ -11,7 +11,7 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
     const [configList, setConfigList] = useState<IConfig[]>([]);
 
     const getConfigurations=() => {
-        fetch('configurations.json',
+        fetch('http://localhost:3000/tests/',
             {
                 headers : {
                     'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
             }
         )
             .then(response => (response.json()))
-            .then(data => setConfigList(data.configurations))
+            .then(data => setConfigList(data))
     }
 
     useEffect(() => {
