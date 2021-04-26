@@ -12,7 +12,7 @@ interface Input {
 const Input = ({ name, label, type = 'text', id, onChange, disabled = false } : Input) => {
     const hasLabel = label ? <label htmlFor={ name }>{ label }</label> : '';
     return (
-        <div>
+        <div className='form-group'>
             { hasLabel }
             <input
                 className="form-control"

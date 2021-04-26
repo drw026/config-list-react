@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Input from '../Input/Input';
 import SegmentSelect from "../SegmentSelect/SegmentSelect";
+import SegmentSelector from "../SegmentSelector/SegmentSelector";
 
 type FormState = {
     title: string
@@ -11,7 +12,7 @@ type FormState = {
     activateOnUpload: boolean
 }
 
-type Segments = {
+export type Segments = {
     [index: string]: string
 }
 
@@ -92,38 +93,64 @@ const AddConfiguration = () => {
     return (
         <form className="addConfiguration" onSubmit={submitHandler}>
             <div className="form-row">
-                <div className="col-auto">
-                    <Input name='title' type='text' onChange={inputHandler}/>
+                <div className="col-12">
+                    <Input name='title' type='text' onChange={inputHandler} label='Title'/>
                 </div>
-                <div className="col-auto">
-                    <select defaultValue={''} name='type' className="form-control" disabled={formState.title === ''} onChange={selectHandler}>
+            </div>
+            <div className="form-row">
+                <div className="col-md-4">
+                    <label htmlFor="type">Type</label>
+                    <select defaultValue={''} id='type' name='type' className="form-control" disabled={formState.title === ''} onChange={selectHandler}>
                         <option value="" disabled>Choose type</option>
                         <option value="direction-markers">Direction Markers</option>
                         <option value="url-filters">URL filters</option>
                     </select>
                 </div>
-                <div className="col-auto">
-                    <SegmentSelect
-                        name="type"
-                        disabled={formState.type === ''}
-                        optionList={segments}
-                        referenceName="reference"
-                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                <div className="col-md-4">
+                    <SegmentSelector
+                        segments={segments}
+                        prefix='test'
+                        label='Test'
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            console.log(segments[event.target.value]);
                             selectSegmentHandler((segments[event.target.value] ? '' : 'test'), event.target.value);
                         }}
                     />
                 </div>
-                <div className="col-auto">
-                    <SegmentSelect
-                        name="type"
-                        disabled={formState.type === ''}
-                        optionList={segments}
-                        referenceName="test"
-                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                <div className="col-md-4">
+                    <SegmentSelector
+                        segments={segments}
+                        prefix='reference'
+                        label='Reference'
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             selectSegmentHandler((segments[event.target.value] ? '' : 'reference'), event.target.value);
                         }}
                     />
                 </div>
+                {/*<div className="col-auto">*/}
+                {/*    <SegmentSelect*/}
+                {/*        name="type"*/}
+                {/*        disabled={formState.type === ''}*/}
+                {/*        optionList={segments}*/}
+                {/*        referenceName="reference"*/}
+                {/*        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {*/}
+                {/*            selectSegmentHandler((segments[event.target.value] ? '' : 'test'), event.target.value);*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</div>*/}
+                {/*<div className="col-auto">*/}
+                {/*    <SegmentSelect*/}
+                {/*        name="type"*/}
+                {/*        disabled={formState.type === ''}*/}
+                {/*        optionList={segments}*/}
+                {/*        referenceName="test"*/}
+                {/*        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {*/}
+                {/*            selectSegmentHandler((segments[event.target.value] ? '' : 'reference'), event.target.value);*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</div>*/}
+            </div>
+            <div className="form-row">
                 <div className="col-auto">
                     <label className=
                                {(formState.testSegments.length === 0 || formState.referenceSegments.length === 0)

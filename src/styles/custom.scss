@@ -8,6 +8,8 @@
 @import '~bootstrap/scss/buttons';
 @import '~bootstrap/scss/button-group';
 @import '~bootstrap/scss/input-group';
+@import '~bootstrap/scss/dropdown';
+@import '~bootstrap/scss/grid';
 
 .addConfiguration {
   padding: .5rem 0;
@@ -22,5 +24,19 @@
 
   .file-label--disabled {
     background-color: #e9ecef;
+  }
+}
+
+.segmentSelector {
+  position: relative;
+
+  &__button {
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .dropdown-item {
+    margin-bottom: 0;
+    padding-left: 2rem;
   }
 }
