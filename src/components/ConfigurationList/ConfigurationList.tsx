@@ -23,7 +23,7 @@ const ConfigurationList: React.FC = () => {
                         .map((field, index) => {
                             let fieldValue = config[field as keyof IConfig];
                             if (['startDate', 'endDate'].includes(field)) {
-                                fieldValue = new Date(fieldValue).toISOString().substring(0, 10);
+                                fieldValue = fieldValue ? new Date(fieldValue).toISOString().substring(0, 10) : '-';
                             }
                             return (
                                 <td key={index}>{fieldValue}</td>

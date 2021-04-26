@@ -5,10 +5,11 @@ interface ISegmentSelector {
     label: string
     prefix: string
     segments: Segments
+    referenceName: string
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const SegmentSelector = ({ label, prefix, segments, onChange }: ISegmentSelector) => {
+const SegmentSelector = ({ label, prefix, segments, referenceName, onChange }: ISegmentSelector) => {
     const [isDropDownOpen, setDropDown] = useState(false);
 
     const toggleDropDown = () => {
@@ -29,7 +30,7 @@ const SegmentSelector = ({ label, prefix, segments, onChange }: ISegmentSelector
             <div className={isDropDownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
                 {Object.keys(segments).map((option, index) => (
                     <label key={index}
-                           className={segments[option] === prefix ? 'dropdown-item disabled' : 'dropdown-item'}
+                           className={segments[option] === referenceName ? 'dropdown-item disabled' : 'dropdown-item'}
                            htmlFor={`${prefix}_${option}`}
                     >
                         <input
@@ -38,7 +39,7 @@ const SegmentSelector = ({ label, prefix, segments, onChange }: ISegmentSelector
                             id={`${prefix}_${option}`}
                             onChange={onChange}
                             value={option}
-                            disabled={segments[option] === prefix}
+                            disabled={segments[option] === referenceName}
                         />
                         <span>{option.replace('g', '')}</span>
                     </label>
