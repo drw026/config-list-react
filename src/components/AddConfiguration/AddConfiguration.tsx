@@ -98,26 +98,30 @@ const AddConfiguration = () => {
             </div>
             <div className="form-row">
                 <div className="col-md-4">
+                    <div className="form-group">
                     <label htmlFor="type">Type</label>
-                    <select defaultValue={''} id='type' name='type' className="form-control" disabled={formState.title === ''} onChange={selectHandler}>
+                    <select defaultValue={''} id='type' name='type' className="form-control" onChange={selectHandler}>
                         <option value="" disabled>Choose type</option>
                         <option value="direction-markers">Direction Markers</option>
                         <option value="url-filters">URL filters</option>
                     </select>
+                    </div>
                 </div>
                 <div className="col-md-4">
+                    <div className="form-group">
                     <SegmentSelector
                         segments={segments}
                         prefix='test'
                         label='Test'
                         referenceName='reference'
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            console.log(segments[event.target.value]);
                             selectSegmentHandler((segments[event.target.value] ? '' : 'test'), event.target.value);
                         }}
                     />
+                    </div>
                 </div>
                 <div className="col-md-4">
+                    <div className="form-group">
                     <SegmentSelector
                         segments={segments}
                         prefix='reference'
@@ -127,22 +131,22 @@ const AddConfiguration = () => {
                             selectSegmentHandler((segments[event.target.value] ? '' : 'reference'), event.target.value);
                         }}
                     />
+                    </div>
                 </div>
             </div>
             <div className="form-row">
                 <div className="col-auto">
-                    <label className=
-                               {(formState.testSegments.length === 0 || formState.referenceSegments.length === 0)
-                               ? "form-control file-label--disabled"
-                               : "form-control"}>
+                    <div className="form-group">
+                    <label htmlFor="type">File</label>
+                    <label className="form-control">
                         <input name="uploadConfig"
                                type="file"
                                id="file"
                                className="file-input"
                                onChange={fileInputHandler}
-                               disabled={(formState.testSegments.length === 0 || formState.referenceSegments.length === 0)}
                         />
                     </label>
+                    </div>
                 </div>
                 <div className="col-auto">
                     <div className="form-check mb-2">

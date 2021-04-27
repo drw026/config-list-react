@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Segments } from '../AddConfiguration/AddConfiguration';
 
 interface ISegmentSelector {
@@ -11,15 +11,24 @@ interface ISegmentSelector {
 
 const SegmentSelector = ({ label, prefix, segments, referenceName, onChange }: ISegmentSelector) => {
     const [isDropDownOpen, setDropDown] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const toggleDropDown = () => {
-        setDropDown(!isDropDownOpen);
+    const handleClick = (event: MouseEvent) => {
+        if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) return;
+        setDropDown(false);
     }
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClick);
+        return () => {
+            document.removeEventListener('mousedown', handleClick);
+        };
+    }, [])
 
     return (
         <div className="segmentSelector">
             <label htmlFor="">{label} segments</label>
-            <div className="segmentSelector__button form-control" onClick={toggleDropDown}>
+            <div className="segmentSelector__button form-control" onClick={event => setDropDown(!isDropDownOpen)}>
                 {(Object.keys(segments)
                     .filter((segment) => segments[segment] === prefix)
                     .map((segment) => parseInt(segment.replace('g', ''), 10))
@@ -27,24 +36,29 @@ const SegmentSelector = ({ label, prefix, segments, referenceName, onChange }: I
                     .join(', ')
                 ) || 'Select segments'}
             </div>
-            <div className={isDropDownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-                {Object.keys(segments).map((option, index) => (
-                    <label key={index}
-                           className={segments[option] === referenceName ? 'dropdown-item disabled' : 'dropdown-item'}
-                           htmlFor={`${prefix}_${option}`}
-                    >
-                        <input
-                            type="checkbox"
-                            className='form-check-input'
-                            id={`${prefix}_${option}`}
-                            onChange={onChange}
-                            value={option}
-                            disabled={segments[option] === referenceName}
-                        />
-                        <span>{option.replace('g', '')}</span>
-                    </label>
-                ))}
-            </div>
+            {isDropDownOpen && (
+                <div className="dropdown-menu show" aria-labelledby="dropdownMenuButton">
+                    <div className="segmentSelector__columns" ref={wrapperRef} id={`${prefix}__columns`}>
+                        {Object.keys(segments).map((option, index) => (
+                            <label key={index}
+                                   className={`dropdown-item ${segments[option] === referenceName ? 'disabled' : ''}`}
+                                   htmlFor={`${prefix}_${option}`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className='form-check-input'
+                                    id={`${prefix}_${option}`}
+                                    onChange={onChange}
+                                    value={option}
+                                    disabled={segments[option] === referenceName}
+                                    checked={segments[option] === prefix}
+                                />
+                                <span>{option.replace('g', '')}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

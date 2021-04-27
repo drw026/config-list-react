@@ -39,4 +39,9 @@
     margin-bottom: 0;
     padding-left: 2rem;
   }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
