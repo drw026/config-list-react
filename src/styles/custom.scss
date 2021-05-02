@@ -22,8 +22,14 @@
    opacity: 0;
   }
 
-  .file-label--disabled {
-    background-color: #e9ecef;
+  .file-label {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .file-placeholder {
+    display: block;
+    position: absolute;
   }
 }
 

@@ -135,28 +135,35 @@ const AddConfiguration = () => {
                 </div>
             </div>
             <div className="form-row">
-                <div className="col-auto">
+                <div className="col-md-6">
                     <div className="form-group">
-                    <label htmlFor="type">File</label>
-                    <label className="form-control">
-                        <input name="uploadConfig"
-                               type="file"
-                               id="file"
-                               className="file-input"
-                               onChange={fileInputHandler}
-                        />
-                    </label>
+                        <label htmlFor="file">File</label>
+                        <label htmlFor="file" className="form-control file-label">
+                            <span className="file-placeholder">{formState.file ? formState.file.name : 'Click to browse for a .csv file'}</span>
+                            <input name="uploadConfig"
+                                   type="file"
+                                   id="file"
+                                   className="file-input"
+                                   onChange={fileInputHandler}
+                            />
+                        </label>
                     </div>
                 </div>
-                <div className="col-auto">
+                <div className="col-md-3">
                     <div className="form-check mb-2">
-                        <input type="checkbox" className="form-check-input" id="active-test" disabled={formState.file === null}/>
+                        <input type="checkbox" className="form-check-input" id="active-test" />
                         <label className="form-check-label" htmlFor="active-test">Activate on upload</label>
                     </div>
                 </div>
-                <div className="col-auto">
+                <div className="col-md-3">
                     <button className="btn btn-primary" type="submit"
-                        disabled={formState.file === null}>Add test</button>
+                        disabled={
+                            formState.title === ''
+                            || formState.type === ''
+                            || formState.testSegments.length === 0
+                            || formState.referenceSegments.length === 0
+                            || formState.file === null
+                        }>Add test</button>
                 </div>
             </div>
         </form>
