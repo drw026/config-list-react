@@ -28,7 +28,7 @@ const SegmentSelector = ({ label, prefix, segments, referenceName, onChange }: I
     return (
         <div className="segmentSelector">
             <label htmlFor="">{label} segments</label>
-            <div className="segmentSelector__button form-control" onClick={event => setDropDown(!isDropDownOpen)}>
+            <div className="segmentSelector__button form-control" onClick={() => setDropDown(!isDropDownOpen)}>
                 {(Object.keys(segments)
                     .filter((segment) => segments[segment] === prefix)
                     .map((segment) => parseInt(segment.replace('g', ''), 10))
