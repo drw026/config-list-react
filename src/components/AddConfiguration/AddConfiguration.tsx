@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Input from '../Input/Input';
 import SegmentSelector from "../SegmentSelector/SegmentSelector";
 
@@ -15,6 +15,11 @@ export type Segments = {
     [index: string]: string
 }
 
+const blankSegments: Segments = {
+    g1: '', g2: '', g3: '', g4: '', g5: '', g6: '', g7: '', g8: '', g9: '', g10: '',
+    g11: '', g12: '', g13: '', g14: '', g15: '', g16: '', g17: '', g18: '', g19: '', g20: ''
+}
+
 const AddConfiguration = () => {
     const [formState, setFormState] = useState<FormState>({
         title: '',
@@ -24,10 +29,8 @@ const AddConfiguration = () => {
         file: null,
         activateOnUpload: false
     });
-    const [segments, setSegments] = useState<Segments>({
-        g1: '', g2: '', g3: '', g4: '', g5: '', g6: '', g7: '', g8: '', g9: '', g10: '',
-        g11: '', g12: '', g13: '', g14: '', g15: '', g16: '', g17: '', g18: '', g19: '', g20: ''
-    });
+    const [segments, setSegments] = useState<Segments>(blankSegments);
+    const fileInput = useRef<HTMLInputElement>(null);
 
     const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -41,6 +44,9 @@ const AddConfiguration = () => {
            file: null,
            activateOnUpload: false
         });
+        setSegments(blankSegments);
+
+        if (fileInput && fileInput.current) fileInput.current.value = '';
     }
 
     const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +81,13 @@ const AddConfiguration = () => {
         }
     }
 
+    const activateTestOnUpload = () => {
+        setFormState({
+            ...formState,
+            activateOnUpload: !formState.activateOnUpload
+        })
+    }
+
     const formatSegments = (segments: Segments, filter: string) => (
         Object.keys(segments)
             .filter((segment) => (segments[segment] === filter))
@@ -93,18 +106,18 @@ const AddConfiguration = () => {
         <form className="addConfiguration" onSubmit={submitHandler}>
             <div className="form-row">
                 <div className="col-12">
-                    <Input name='title' type='text' onChange={inputHandler} label='Title'/>
+                    <Input value={formState.title} name='title' type='text' onChange={inputHandler} label='Title'/>
                 </div>
             </div>
             <div className="form-row">
                 <div className="col-md-4">
                     <div className="form-group">
-                    <label htmlFor="type">Type</label>
-                    <select defaultValue={''} id='type' name='type' className="form-control" onChange={selectHandler}>
-                        <option value="" disabled>Choose type</option>
-                        <option value="direction-markers">Direction Markers</option>
-                        <option value="url-filters">URL filters</option>
-                    </select>
+                        <label htmlFor="type">Type</label>
+                        <select value={formState.type} id='type' name='type' className="form-control" onChange={selectHandler}>
+                            <option value="" disabled>Choose type</option>
+                            <option value="direction-markers">Direction Markers</option>
+                            <option value="url-filters">URL filters</option>
+                        </select>
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -135,7 +148,7 @@ const AddConfiguration = () => {
                 </div>
             </div>
             <div className="form-row">
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <div className="form-group">
                         <label htmlFor="file">File</label>
                         <label htmlFor="file" className="form-control file-label">
@@ -145,25 +158,32 @@ const AddConfiguration = () => {
                                    id="file"
                                    className="file-input"
                                    onChange={fileInputHandler}
+                                   ref={fileInput}
                             />
                         </label>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="form-check mb-2">
-                        <input type="checkbox" className="form-check-input" id="active-test" />
-                        <label className="form-check-label" htmlFor="active-test">Activate on upload</label>
+            </div>
+            <div className="form-row">
+                <div className="col-md-12">
+                    <div className="form-group form-check small form-check-inline">
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="active-test"
+                            onChange={activateTestOnUpload}
+                            checked={formState.activateOnUpload}
+                        />
+                        <label className="form-check-label" htmlFor="active-test">activate on upload</label>
                     </div>
-                </div>
-                <div className="col-md-3">
                     <button className="btn btn-primary" type="submit"
-                        disabled={
-                            formState.title === ''
-                            || formState.type === ''
-                            || formState.testSegments.length === 0
-                            || formState.referenceSegments.length === 0
-                            || formState.file === null
-                        }>Add test</button>
+                            disabled={
+                                formState.title === ''
+                                || formState.type === ''
+                                || formState.testSegments.length === 0
+                                || formState.referenceSegments.length === 0
+                                || formState.file === null
+                            }>Add test configuration</button>
                 </div>
             </div>
         </form>

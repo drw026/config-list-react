@@ -1,15 +1,16 @@
 import React from 'react';
 
 interface Input {
-    name: string,
+    name: string
+    value: string
     disabled?: boolean
-    label?: string,
+    label?: string
     type?: string
     id?: string
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const Input = ({ name, label, type = 'text', id, onChange, disabled = false } : Input) => {
+const Input = ({ name, value, label, type = 'text', id, onChange, disabled = false } : Input) => {
     const hasLabel = label ? <label htmlFor={ name }>{ label }</label> : '';
     return (
         <div className='form-group'>
@@ -21,6 +22,7 @@ const Input = ({ name, label, type = 'text', id, onChange, disabled = false } : 
                 id={id ? id : ''}
                 onChange={onChange}
                 disabled={disabled}
+                value={value}
             />
         </div>
     );
