@@ -7,12 +7,14 @@ import './App.scss';
 function App() {
   return (
       <ConfigurationListProvider>
-        <div className="App">
-          <div className="container">
-              <AddConfiguration />
-              <ConfigurationList />
+          <div className="App">
+              <div className="container-fluid">
+                  <div className="container">
+                      <AddConfiguration/>
+                  </div>
+                  <ConfigurationList/>
+              </div>
           </div>
-        </div>
       </ConfigurationListProvider>
   );
 }
