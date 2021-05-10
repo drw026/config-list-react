@@ -1,6 +1,6 @@
 interface IConfig {
     title: string
-    test_id: string
+    id: string
     status: string
     startDate: string
     endDate: string
