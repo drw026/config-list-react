@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Input from '../Input/Input';
 import SegmentSelector from "../SegmentSelector/SegmentSelector";
+import upload from '../../utilities/upload';
 
 type FormState = {
     title: string
@@ -32,9 +33,10 @@ const AddConfiguration = () => {
     const [segments, setSegments] = useState<Segments>(blankSegments);
     const fileInput = useRef<HTMLInputElement>(null);
 
-    const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
+    const submitHandler = async(event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(formState);
+
+        await upload({ data: formState });
 
         setFormState({
            title: '',
@@ -106,7 +108,7 @@ const AddConfiguration = () => {
         <form className="addConfiguration" onSubmit={submitHandler}>
             <div className="form-row">
                 <div className="col-12">
-                    <Input value={formState.title} name='title' type='text' onChange={inputHandler} label='Title'/>
+                    <Input value={formState.title} name='title' type='text' onChange={inputHandler} label='Title' autocomplete={false} />
                 </div>
             </div>
             <div className="form-row">
