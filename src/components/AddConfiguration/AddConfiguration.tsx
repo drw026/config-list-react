@@ -97,11 +97,11 @@ const AddConfiguration = () => {
     )
 
     useEffect(() => {
-        setFormState({
+        setFormState(formState => ({
             ...formState,
             testSegments: formatSegments(segments, 'test'),
             referenceSegments: formatSegments(segments, 'reference')
-        })
+        }))
     }, [segments]);
 
     return (
