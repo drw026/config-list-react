@@ -15,14 +15,48 @@ const COLUMNS = [
     {
         Header: 'Status',
         accessor: 'status',
+        Cell: (props) => {
+            let classStatus = 'badge';
+
+            if (props.value === 'Active') classStatus += ' badge-success'
+            if (props.value === 'Ready for activation') classStatus += ' badge-warning'
+            if (props.value === 'Failed') classStatus += ' badge-danger'
+
+            return (<span className={classStatus}>{props.value}</span>)
+        }
     },
     {
         Header: 'Start date',
         accessor: 'startDate',
+        Cell: (props) => (props.value ? new Date(props.value).toISOString().substring(0, 10) : '-'),
     },
     {
         Header: 'End date',
-        accessor: 'endDate'
+        accessor: 'endDate',
+        Cell: (props) => (props.value ? new Date(props.value).toISOString().substring(0, 10) : '-'),
+    },
+    {
+        Header: () => null,
+        id: 'statusActions',
+        Cell: ({ row }) => {
+            return (
+                <>
+                    {row.original.status === 'Ready for activation' && (<button className='btn btn-light'>Activate</button>)}
+                    {row.original.status === 'Active' && (<button className='btn btn-light'>End</button>)}
+                </>
+            )
+        }
+    },
+    {
+        Header: () => null,
+        id: 'actions',
+        Cell: ({ row }) => {
+            return (
+                <>
+                    <button className='btn btn-light' onClick={() => removeTest(row.original.id)}><Trash/></button>
+                </>
+            )
+        }
     }
 ];
 
