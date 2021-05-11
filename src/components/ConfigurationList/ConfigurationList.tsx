@@ -1,7 +1,18 @@
 // @ts-nocheck
 import React, { useContext, useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
+import { Trash } from 'react-bootstrap-icons';
 import { ConfigurationListContext } from "../../context/ConfigurationListContext";
+
+const removeTest = (id) => {
+    fetch(`http://localhost:3000/tests/${id}`,
+        {
+            method: 'DELETE'
+        }
+    ).then(data => {
+       console.log(data);
+    });
+}
 
 const COLUMNS = [
     {
