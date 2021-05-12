@@ -14,6 +14,15 @@ const removeTest = (id) => {
     });
 }
 
+const changeStatusTest = ({ id, status }) => {
+    fetch(`http://localhost:3000/tests/${id}/status`,
+        {
+            method: 'PATCH',
+            body: status
+        }
+    )
+}
+
 const COLUMNS = [
     {
         Header: 'Title',
@@ -32,6 +41,7 @@ const COLUMNS = [
             if (props.value === 'Active') classStatus += ' badge-success'
             if (props.value === 'Ready for activation') classStatus += ' badge-warning'
             if (props.value === 'Failed') classStatus += ' badge-danger'
+            if (props.value === 'Ended') classStatus += ' badge-light'
 
             return (<span className={classStatus}>{props.value}</span>)
         }
@@ -52,8 +62,14 @@ const COLUMNS = [
         Cell: ({ row }) => {
             return (
                 <>
-                    {row.original.status === 'Ready for activation' && (<button className='btn btn-light'>Activate</button>)}
-                    {row.original.status === 'Active' && (<button className='btn btn-light'>End</button>)}
+                    {row.original.status === 'Ready for activation' && (
+                        <button className='btn btn-light'
+                                onClick={() => changeStatusTest({ id: row.original.id, status: 1 })}
+                        >Activate</button>)}
+                    {row.original.status === 'Active' && (
+                        <button className='btn btn-light'
+                                onClick={() => changeStatusTest({ id: row.original.id, status: 2 })}
+                        >End</button>)}
                 </>
             )
         }
