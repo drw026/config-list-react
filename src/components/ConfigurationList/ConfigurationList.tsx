@@ -23,6 +23,22 @@ const changeStatusTest = ({ id, status }) => {
     )
 }
 
+const formatDate = (date) => {
+    const currentDate = new Date(date);
+    const {
+        year, month, day, hour, minute, second,
+    } = {
+        day: (`0${currentDate.getDate()}`).slice(-2),
+        hour: (`0${currentDate.getHours()}`).slice(-2),
+        minute: (`0${currentDate.getMinutes()}`).slice(-2),
+        month: (`0${currentDate.getMonth() + 1}`).slice(-2),
+        second: (`0${currentDate.getSeconds()}`).slice(-2),
+        year: currentDate.getFullYear(),
+
+    };
+    return `${day}-${month}-${year} ${hour}:${minute}:${second}`
+}
+
 const COLUMNS = [
     {
         Header: 'Title',
@@ -49,12 +65,12 @@ const COLUMNS = [
     {
         Header: 'Start date',
         accessor: 'startDate',
-        Cell: (props) => (props.value ? new Date(props.value).toISOString().substring(0, 10) : '-'),
+        Cell: (props) => (props.value ? formatDate(props.value) : '-'),
     },
     {
         Header: 'End date',
         accessor: 'endDate',
-        Cell: (props) => (props.value ? new Date(props.value).toISOString().substring(0, 10) : '-'),
+        Cell: (props) => (props.value ? formatDate(props.value) : '-'),
     },
     {
         Header: () => null,
@@ -107,7 +123,7 @@ const ConfigurationList: React.FC = () => {
 
     return (
         <>
-            <table className="table" {...getTableProps()}>
+            <table className="table table-striped table-bordered table-hover" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
