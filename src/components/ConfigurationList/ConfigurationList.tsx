@@ -1,43 +1,10 @@
 // @ts-nocheck
 import React, { useContext, useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
-import { Trash } from 'react-bootstrap-icons';
+import { Trash, Download } from 'react-bootstrap-icons';
 import { ConfigurationListContext } from "../../context/ConfigurationListContext";
-
-const removeTest = (id) => {
-    fetch(`http://localhost:3000/tests/${id}`,
-        {
-            method: 'DELETE'
-        }
-    ).then(data => {
-       console.log(data);
-    });
-}
-
-const changeStatusTest = ({ id, status }) => {
-    fetch(`http://localhost:3000/tests/${id}/status`,
-        {
-            method: 'PATCH',
-            body: status
-        }
-    )
-}
-
-const formatDate = (date) => {
-    const currentDate = new Date(date);
-    const {
-        year, month, day, hour, minute, second,
-    } = {
-        day: (`0${currentDate.getDate()}`).slice(-2),
-        hour: (`0${currentDate.getHours()}`).slice(-2),
-        minute: (`0${currentDate.getMinutes()}`).slice(-2),
-        month: (`0${currentDate.getMonth() + 1}`).slice(-2),
-        second: (`0${currentDate.getSeconds()}`).slice(-2),
-        year: currentDate.getFullYear(),
-
-    };
-    return `${day}-${month}-${year} ${hour}:${minute}:${second}`
-}
+import formatDate from '../../utilities/formatDate';
+import { removeTest, changeStatusTest } from '../../utilities/statusActions';
 
 const COLUMNS = [
     {
@@ -95,9 +62,10 @@ const COLUMNS = [
         id: 'actions',
         Cell: ({ row }) => {
             return (
-                <>
+                <div className='btn-group'>
                     <button className='btn btn-light' onClick={() => removeTest(row.original.id)}><Trash/></button>
-                </>
+                    <button className='btn btn-light'><Download /></button>
+                </div>
             )
         }
     }
