@@ -1,12 +1,21 @@
 // @ts-nocheck
-import React, { useContext, useMemo } from 'react';
-import { useTable, useSortBy } from 'react-table';
-import { Trash, Download } from 'react-bootstrap-icons';
+import React, { useContext, useMemo, useCallback, Fragment } from 'react';
+import { useTable, useSortBy, useExpanded } from 'react-table';
+import { Trash, Download, CaretDownFill, CaretRightFill } from 'react-bootstrap-icons';
 import { ConfigurationListContext } from "../../context/ConfigurationListContext";
 import formatDate from '../../utilities/formatDate';
 import { removeTest, changeStatusTest } from '../../utilities/statusActions';
 
 const COLUMNS = [
+    {
+        Header: () => null,
+        id: 'expander',
+        Cell: ({ row }) => (
+            <button className='btn btn-sm' {...row.getToggleRowExpandedProps()}>
+                {row.isExpanded ? <CaretDownFill/> : <CaretRightFill/> }
+            </button>
+        )
+    },
     {
         Header: 'Title',
         accessor: 'title',
@@ -22,7 +31,7 @@ const COLUMNS = [
             let classStatus = 'badge';
 
             if (props.value === 'Active') classStatus += ' badge-success'
-            if (props.value === 'Ready for activation') classStatus += ' badge-warning'
+            if (props.value === 'Ready') classStatus += ' badge-warning'
             if (props.value === 'Failed') classStatus += ' badge-danger'
             if (props.value === 'Ended') classStatus += ' badge-light'
 
@@ -45,12 +54,12 @@ const COLUMNS = [
         Cell: ({ row }) => {
             return (
                 <>
-                    {row.original.status === 'Ready for activation' && (
-                        <button className='btn btn-light'
+                    {row.original.status === 'Ready' && (
+                        <button className='btn btn-primary btn-sm'
                                 onClick={() => changeStatusTest({ id: row.original.id, status: 1 })}
-                        >Activate</button>)}
+                        >Start</button>)}
                     {row.original.status === 'Active' && (
-                        <button className='btn btn-light'
+                        <button className='btn btn-primary btn-sm'
                                 onClick={() => changeStatusTest({ id: row.original.id, status: 2 })}
                         >End</button>)}
                 </>
@@ -63,8 +72,8 @@ const COLUMNS = [
         Cell: ({ row }) => {
             return (
                 <div className='btn-group'>
-                    <button className='btn btn-light' onClick={() => removeTest(row.original.id)}><Trash/></button>
-                    <button className='btn btn-light'><Download /></button>
+                    <button className='btn btn-primary btn-sm' onClick={() => removeTest(row.original.id)}><Trash/></button>
+                    <button className='btn btn-primary btn-sm'><Download /></button>
                 </div>
             )
         }
@@ -75,23 +84,45 @@ const ConfigurationList: React.FC = () => {
     const { configList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
     const columns = useMemo(() => COLUMNS, []);
 
+    const renderRowSubComponent = useCallback(
+        ({ row }) => (
+            <>
+                <ul>
+                    <li>Creation date: {formatDate(row.original.creationDate)}</li>
+                    <li>
+                        Test segments: {row.original.testSegments.map((test) => (<span className='badge badge-pill badge-info'>{test}</span>))}
+                    </li>
+                    <li>
+                        Reference segments: {row.original.referenceSegments.map((test) => (<span className='badge badge-pill badge-info'>{test}</span>))}
+                    </li>
+                </ul>
+            </>
+        ),
+        []
+    );
+
     const {
         getTableProps,
         getTableBodyProps,
         rows,
         prepareRow,
-        headerGroups
+        headerGroups,
+        visibleColumns,
     } = useTable(
         {
             data: configList,
-            columns
+            columns,
+            initialState: {
+                sortBy: [{ id: 'startDate', desc: true }]
+            }
         },
-        useSortBy
+        useSortBy,
+        useExpanded
     )
 
     return (
         <>
-            <table className="table table-striped table-bordered table-hover" {...getTableProps()}>
+            <table className="table table-bordered table-hover" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -105,15 +136,25 @@ const ConfigurationList: React.FC = () => {
                 {rows.map((row, i) => {
                     prepareRow(row)
                     return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
+                        <Fragment {...row.getRowProps()}>
+                            <tr>
+                                {row.cells.map(cell => {
+                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                            {row.isExpanded ? (
+                                <tr>
+                                    <td colSpan={visibleColumns.length}>
+                                        {renderRowSubComponent({ row })}
+                                    </td>
+                                </tr>
+                            ) : null}
+                        </Fragment>
                     )
                 })}
                 </tbody>
             </table>
+
         </>
     )
 }
