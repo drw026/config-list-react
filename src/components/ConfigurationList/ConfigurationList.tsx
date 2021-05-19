@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useContext, useMemo, useCallback, Fragment } from 'react';
+import React, { useContext, useMemo, useCallback } from 'react';
 import { useTable, useSortBy, useExpanded } from 'react-table';
 import { Trash, Download, CaretDownFill, CaretRightFill } from 'react-bootstrap-icons';
 import { ConfigurationListContext } from "../../context/ConfigurationListContext";
@@ -90,10 +90,10 @@ const ConfigurationList: React.FC = () => {
                 <ul>
                     <li>Creation date: {formatDate(row.original.creationDate)}</li>
                     <li>
-                        Test segments: {row.original.testSegments.map((test) => (<span className='badge badge-pill badge-info'>{test}</span>))}
+                        Test segments: {row.original.testSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
                     </li>
                     <li>
-                        Reference segments: {row.original.referenceSegments.map((test) => (<span className='badge badge-pill badge-info'>{test}</span>))}
+                        Reference segments: {row.original.referenceSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
                     </li>
                 </ul>
             </>
@@ -120,10 +120,11 @@ const ConfigurationList: React.FC = () => {
         useExpanded
     )
 
-    return (
-        <>
-            <table className="table table-bordered table-hover" {...getTableProps()}>
-                <thead>
+    return (configList.length > 0
+        ? (
+            <>
+                <table className="table table-bordered table-hover" {...getTableProps()}>
+                    <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
@@ -131,32 +132,37 @@ const ConfigurationList: React.FC = () => {
                             ))}
                         </tr>
                     ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                        <Fragment {...row.getRowProps()}>
-                            <tr>
-                                {row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                })}
-                            </tr>
-                            {row.isExpanded ? (
-                                <tr>
-                                    <td colSpan={visibleColumns.length}>
-                                        {renderRowSubComponent({ row })}
-                                    </td>
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row)
+                        return (
+                            <>
+                                <tr {...row.getRowProps()}>
+                                    {row.cells.map(cell => {
+                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    })}
                                 </tr>
-                            ) : null}
-                        </Fragment>
-                    )
-                })}
-                </tbody>
-            </table>
-
-        </>
-    )
+                                {row.isExpanded ? (
+                                    <tr>
+                                        <td colSpan={visibleColumns.length}>
+                                            {renderRowSubComponent({ row })}
+                                        </td>
+                                    </tr>
+                                ) : null}
+                            </>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            </>
+        )
+        : (
+            <div className='container'>
+                <div className="alert alert-warning">No tests to display. Add tests by using the form.</div>
+            </div>
+        )
+    );
 }
 
 export default ConfigurationList;
