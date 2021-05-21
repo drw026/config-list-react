@@ -28,7 +28,15 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
     },[])
 
     return (
-        <ConfigurationListContext.Provider value={{configList}}>
+        <ConfigurationListContext.Provider value={{
+            configList,
+            updateConfigList: (data: IConfig) => {
+              setConfigList([
+                  ...configList,
+                  data
+              ])
+            },
+        }}>
             {children}
         </ConfigurationListContext.Provider>
     )

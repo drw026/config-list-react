@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import Input from '../Input/Input';
 import SegmentSelector from "../SegmentSelector/SegmentSelector";
 import upload from '../../utilities/upload';
+import {ConfigurationListContext} from '../../context/ConfigurationListContext';
 
 type FormState = {
     title: string
@@ -32,11 +33,17 @@ const AddConfiguration = () => {
     });
     const [segments, setSegments] = useState<Segments>(blankSegments);
     const fileInput = useRef<HTMLInputElement>(null);
+    const { updateConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
 
     const submitHandler = async(event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         await upload({ data: formState });
+
+        updateConfigList({
+            ...formState,
+            status: 'Processing'
+        });
 
         setFormState({
            title: '',
