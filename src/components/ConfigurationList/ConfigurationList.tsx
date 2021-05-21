@@ -31,7 +31,7 @@ const COLUMNS = [
             let classStatus = 'badge';
 
             if (props.value === 'Active') classStatus += ' badge-success'
-            if (props.value === 'Ready') classStatus += ' badge-warning'
+            if (props.value === 'Ready' || props.value === 'Processing') classStatus += ' badge-warning'
             if (props.value === 'Failed') classStatus += ' badge-danger'
             if (props.value === 'Ended') classStatus += ' badge-light'
 
