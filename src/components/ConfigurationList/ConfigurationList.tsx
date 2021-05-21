@@ -87,15 +87,28 @@ const ConfigurationList: React.FC = () => {
     const renderRowSubComponent = useCallback(
         ({ row }) => (
             <>
-                <ul>
-                    <li>Creation date: {formatDate(row.original.creationDate)}</li>
-                    <li>
-                        Test segments: {row.original.testSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
-                    </li>
-                    <li>
-                        Reference segments: {row.original.referenceSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
-                    </li>
-                </ul>
+                <table className='table table-sm table-responsive'>
+                    <tr>
+                        <td>Test ID:</td>
+                        <td>{row.original.id ? row.original.id : '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Creation date:</td>
+                        <td>{row.original.creationDate ? formatDate(row.original.creationDate) : '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Test segments:</td>
+                        <td>
+                            {row.original.testSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Reference segments:</td>
+                        <td>
+                            {row.original.referenceSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
+                        </td>
+                    </tr>
+                </table>
             </>
         ),
         []
