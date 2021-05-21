@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useMemo, useCallback, Fragment } from 'react';
 import { useTable, useSortBy, useExpanded } from 'react-table';
 import { Trash, Download, CaretDownFill, CaretRightFill } from 'react-bootstrap-icons';
 import { ConfigurationListContext } from "../../context/ConfigurationListContext";
@@ -31,9 +31,10 @@ const COLUMNS = [
             let classStatus = 'badge';
 
             if (props.value === 'Active') classStatus += ' badge-success'
-            if (props.value === 'Ready' || props.value === 'Processing') classStatus += ' badge-warning'
+            if (props.value === 'Processing') classStatus += ' badge-info'
+            if (props.value === 'Ready') classStatus += ' badge-warning'
             if (props.value === 'Failed') classStatus += ' badge-danger'
-            if (props.value === 'Ended') classStatus += ' badge-light'
+            if (props.value === 'Ended') classStatus += ' badge-secondary'
 
             return (<span className={classStatus}>{props.value}</span>)
         }
@@ -86,8 +87,8 @@ const ConfigurationList: React.FC = () => {
 
     const renderRowSubComponent = useCallback(
         ({ row }) => (
-            <>
-                <table className='table table-sm table-responsive'>
+            <table className='table table-sm table-responsive'>
+                <tbody>
                     <tr>
                         <td>Test ID:</td>
                         <td>{row.original.id ? row.original.id : '-'}</td>
@@ -99,17 +100,17 @@ const ConfigurationList: React.FC = () => {
                     <tr>
                         <td>Test segments:</td>
                         <td>
-                            {row.original.testSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
+                            {row.original.testSegments.map((test, index) => (<span key={index} className='badge badge-info'>{test}</span>))}
                         </td>
                     </tr>
                     <tr>
                         <td>Reference segments:</td>
                         <td>
-                            {row.original.referenceSegments.map((test, index) => (<><span key={index} className='badge badge-info'>{test}</span>&nbsp;</>))}
+                            {row.original.referenceSegments.map((test, index) => (<span key={index} className='badge badge-info'>{test}</span>))}
                         </td>
                     </tr>
-                </table>
-            </>
+                </tbody>
+            </table>
         ),
         []
     );
@@ -138,34 +139,34 @@ const ConfigurationList: React.FC = () => {
             <>
                 <table className="table table-bordered table-hover" {...getTableProps()}>
                     <thead>
-                    {headerGroups.map(headerGroup => (
+                    {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
+                            {headerGroup.headers.map((column, index) => (
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
                             ))}
                         </tr>
                     ))}
                     </thead>
                     <tbody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                            <>
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map(cell => {
-                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                    })}
-                                </tr>
-                                {row.isExpanded ? (
-                                    <tr>
-                                        <td colSpan={visibleColumns.length}>
-                                            {renderRowSubComponent({ row })}
-                                        </td>
+                        {rows.map((row, i) => {
+                            prepareRow(row)
+                            return (
+                                <Fragment key={i}>
+                                    <tr {...row.getRowProps()}>
+                                        {row.cells.map((cell) => {
+                                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                        })}
                                     </tr>
-                                ) : null}
-                            </>
-                        )
-                    })}
+                                    {row.isExpanded ? (
+                                        <tr>
+                                            <td colSpan={visibleColumns.length}>
+                                                {renderRowSubComponent({ row })}
+                                            </td>
+                                        </tr>
+                                    ) : null}
+                                </Fragment>
+                            )
+                        })}
                     </tbody>
                 </table>
             </>
