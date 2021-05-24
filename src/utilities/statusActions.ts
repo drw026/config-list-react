@@ -1,11 +1,11 @@
-export const removeTest = (id: string) => {
-    fetch(`http://localhost:3000/tests/${id}`,
-        {
-            method: 'DELETE'
-        }
-    ).then(data => {
-        console.log(data);
-    });
+export const removeTest = async (id: string) => {
+    try {
+        return await fetch(`http://localhost:3000/tests/${id}`,
+            {
+                method: 'DELETE'
+            }
+        )
+    } catch(error) {}
 }
 
 interface ChangeStatusTest {
@@ -13,11 +13,13 @@ interface ChangeStatusTest {
     status: number
 }
 
-export const changeStatusTest = ({ id, status }: ChangeStatusTest) => {
-    fetch(`http://localhost:3000/tests/${id}/status`,
-        {
-            method: 'PATCH',
-            body: JSON.stringify(status)
-        }
-    )
+export const changeStatusTest = async ({ id, status }: ChangeStatusTest) => {
+    try {
+        return await fetch(`http://localhost:3000/tests/${id}/status`,
+            {
+                method: 'PATCH',
+                body: JSON.stringify(status)
+            }
+        )
+    } catch(error) {}
 }
