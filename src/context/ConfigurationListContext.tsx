@@ -9,8 +9,10 @@ type ConfigurationListProviderProps = {
 const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
     const { children } = props;
     const [configList, setConfigList] = useState<IConfig[]>([]);
+    const [isConfigListLoading, setConfigListLoading] = useState(false);
 
     const getConfigurations=() => {
+        setConfigListLoading(true);
         fetch('http://localhost:3000/tests/',
             {
                 headers : {
@@ -20,7 +22,10 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
             }
         )
             .then(response => (response.json()))
-            .then(data => setConfigList(data))
+            .then((data) => {
+                setConfigListLoading(false);
+                return setConfigList(data);
+            })
     }
 
     useEffect(() => {
@@ -30,6 +35,7 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
     return (
         <ConfigurationListContext.Provider value={{
             configList,
+            isConfigListLoading,
             updateConfigList: (data: IConfig) => {
               setConfigList([
                   ...configList,
