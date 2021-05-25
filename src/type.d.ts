@@ -13,4 +13,5 @@ type ConfigurationListContextType = {
     configList: IConfig[]
     isConfigListLoading: boolean
     updateConfigList: (IConfig) => void
+    refreshConfigList: () => void
 }

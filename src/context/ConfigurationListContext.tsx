@@ -36,6 +36,7 @@ const ConfigurationListProvider = (props: ConfigurationListProviderProps) => {
         <ConfigurationListContext.Provider value={{
             configList,
             isConfigListLoading,
+            refreshConfigList: getConfigurations,
             updateConfigList: (data: IConfig) => {
               setConfigList([
                   ...configList,

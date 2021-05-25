@@ -57,16 +57,22 @@ const TableColumns = [
         Header: () => null,
         id: 'statusActions',
         width: 5,
-        Cell: ({ row }) => {
+        Cell: (props) => {
             return (
                 <>
-                    {row.original.status === 'Ready' && (
+                    {props.row.original.status === 'Ready' && (
                         <button className='btn btn-primary btn-sm btn-block'
-                                onClick={() => changeStatusTest({ id: row.original.id, status: 1 })}
+                                onClick={async () => {
+                                    await changeStatusTest({ id: props.row.original.id, status: 1 });
+                                    props.refreshConfigList();
+                                }}
                         >Start</button>)}
-                    {row.original.status === 'Active' && (
+                    {props.row.original.status === 'Active' && (
                         <button className='btn btn-primary btn-sm btn-block'
-                                onClick={() => changeStatusTest({ id: row.original.id, status: 2 })}
+                                onClick={async () => {
+                                    await changeStatusTest({ id: props.row.original.id, status: 2 });
+                                    props.refreshConfigList();
+                                }}
                         >End</button>)}
                 </>
             )
@@ -76,10 +82,13 @@ const TableColumns = [
         Header: () => null,
         id: 'actions',
         width: 10.5,
-        Cell: ({ row }) => {
+        Cell: (props) => {
             return (
                 <>
-                    <button className='btn btn-primary btn-sm' onClick={() => removeTest(row.original.id)}><Trash size={20} /></button>{'\n'}
+                    <button className='btn btn-primary btn-sm' onClick={async () => {
+                        await removeTest(props.row.original.id);
+                        props.refreshConfigList();
+                    }}><Trash size={20} /></button>{'\n'}
                     <button className='btn btn-primary btn-sm'><Download size={20} /></button>
                 </>
             )

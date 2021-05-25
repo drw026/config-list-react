@@ -33,29 +33,32 @@ const AddConfiguration = () => {
     });
     const [segments, setSegments] = useState<Segments>(blankSegments);
     const fileInput = useRef<HTMLInputElement>(null);
-    const { updateConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
+    const { updateConfigList, refreshConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
 
     const submitHandler = async(event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        await upload({ data: formState });
 
         updateConfigList({
             ...formState,
             status: 'Processing'
         });
 
-        setFormState({
-           title: '',
-           type: '',
-           testSegments: [],
-           referenceSegments: [],
-           file: null,
-           activateOnUpload: false
-        });
-        setSegments(blankSegments);
+        await upload({ data: formState });
+        setTimeout(() => {
+            refreshConfigList();
 
-        if (fileInput && fileInput.current) fileInput.current.value = '';
+            setFormState({
+                title: '',
+                type: '',
+                testSegments: [],
+                referenceSegments: [],
+                file: null,
+                activateOnUpload: false
+            });
+            setSegments(blankSegments);
+
+            if (fileInput && fileInput.current) fileInput.current.value = '';
+        }, 500);
     }
 
     const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

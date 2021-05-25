@@ -6,7 +6,7 @@ import TableColumns from '../TableColumns/TableColumns';
 import TableSubRow from '../TableSubRow/TableSubRow';
 
 const ConfigurationList: React.FC = () => {
-    const { configList, isConfigListLoading } = useContext(ConfigurationListContext) as ConfigurationListContextType;
+    const { configList, isConfigListLoading, refreshConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
     const Columns = useMemo(() => TableColumns, []);
     const SubRow = useCallback(TableSubRow, []);
 
@@ -57,7 +57,7 @@ const ConfigurationList: React.FC = () => {
                                         style: {
                                             width: `${cell.column.width}%`
                                         }
-                                    })}>{cell.render('Cell')}</td>
+                                    })}>{cell.render('Cell', { refreshConfigList })}</td>
                                 })}
                             </tr>
                             {row.isExpanded ? (
