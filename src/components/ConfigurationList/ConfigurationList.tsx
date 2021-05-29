@@ -9,6 +9,7 @@ const ConfigurationList: React.FC = () => {
     const { configList, isConfigListLoading, refreshConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
     const Columns = useMemo(() => TableColumns, []);
     const SubRow = useCallback(TableSubRow, []);
+    const refreshList = useCallback(refreshConfigList, []);
 
     const {
         getTableProps,
@@ -57,7 +58,7 @@ const ConfigurationList: React.FC = () => {
                                         style: {
                                             width: `${cell.column.width}%`
                                         }
-                                    })}>{cell.render('Cell', { refreshConfigList })}</td>
+                                    })}>{cell.render('Cell', { refreshList })}</td>
                                 })}
                             </tr>
                             {row.isExpanded ? (

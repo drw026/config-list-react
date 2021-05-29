@@ -64,14 +64,14 @@ const TableColumns = [
                         <button className='btn btn-primary btn-sm btn-block'
                                 onClick={async () => {
                                     await changeStatusTest({ id: props.row.original.id, status: 1 });
-                                    props.refreshConfigList();
+                                    props.refreshList();
                                 }}
                         >Start</button>)}
                     {props.row.original.status === 'Active' && (
                         <button className='btn btn-primary btn-sm btn-block'
                                 onClick={async () => {
                                     await changeStatusTest({ id: props.row.original.id, status: 2 });
-                                    props.refreshConfigList();
+                                    props.refreshList();
                                 }}
                         >End</button>)}
                 </>
@@ -87,7 +87,7 @@ const TableColumns = [
                 <>
                     <button className='btn btn-primary btn-sm' onClick={async () => {
                         await removeTest(props.row.original.id);
-                        props.refreshConfigList();
+                        props.refreshList();
                     }}><Trash size={20} /></button>{'\n'}
                     <button className='btn btn-primary btn-sm'><Download size={20} /></button>
                 </>

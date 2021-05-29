@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext} from 'react';
+import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import Input from '../Input/Input';
 import SegmentSelector from "../SegmentSelector/SegmentSelector";
 import upload from '../../utilities/upload';
@@ -34,6 +34,7 @@ const AddConfiguration = () => {
     const [segments, setSegments] = useState<Segments>(blankSegments);
     const fileInput = useRef<HTMLInputElement>(null);
     const { updateConfigList, refreshConfigList } = useContext(ConfigurationListContext) as ConfigurationListContextType;
+    const refreshList = useCallback(refreshConfigList, []);
 
     const submitHandler = async(event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -43,9 +44,16 @@ const AddConfiguration = () => {
             status: 'Processing'
         });
 
-        await upload({ data: formState });
+        const response = await upload({ data: formState });
+
         setTimeout(() => {
-            refreshConfigList();
+            if (response.status === 0 || (response.status >= 400 && response.status <= 500)) {
+                updateConfigList({
+                    ...formState,
+                    status: 'Failed'
+                });
+                return;
+            }
 
             setFormState({
                 title: '',
@@ -58,6 +66,8 @@ const AddConfiguration = () => {
             setSegments(blankSegments);
 
             if (fileInput && fileInput.current) fileInput.current.value = '';
+
+            refreshList();
         }, 500);
     }
 
